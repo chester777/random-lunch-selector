@@ -1,6 +1,6 @@
 from flask import Flask, render_template
 import threading
-import datetime
+from datetime import datetime
 import time
 import sqlite3
 
@@ -9,8 +9,8 @@ app = Flask(__name__)
 dayFlag = None
 dayResult = dict()
 
-today = datetime.datetime.today()
-todayTime = datetime.datetime(today.year, today.month, today.day)
+today = datetime.today()
+todayTime = datetime(today.year, today.month, today.day)
 
 @app.route('/')
 def home():
@@ -24,7 +24,7 @@ def result():
     if dayFlag is True:
         return render_template("finished.html", result = dayResult)
 
-    else:
+    elif dayFlag is False:
         conn = sqlite3.connect("store.db")
         cur = conn.cursor()
         cur.execute("SELECT * FROM store ORDER BY RANDOM() LIMIT 1")
@@ -42,15 +42,16 @@ def result():
 
 def day_check():
     global todayTime
+    global dayFlag
 
     while True:
-        currentTime = datetime.datetime.now()
+        currentTime = datetime.now()
         if (currentTime - todayTime).days > 0:
-            todayTime = datetime.datetime(currentTime.year, currentTime.month, currentTime.day)
+            todayTime = datetime(currentTime.year, currentTime.month, currentTime.day)
             dayFlag = False
 
         print(" * Check: the date has changed.")
-        time.sleep(18000)
+        time.sleep(3600)
 
 if __name__ == '__main__':
 
